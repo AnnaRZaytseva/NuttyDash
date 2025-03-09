@@ -1,0 +1,58 @@
+{
+    "activeFile": "E:/project_Nutty_Dash/Game/Maps/test.tmx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "Все файлы (*)",
+    "fileStates": {
+        "E:/project_Nutty_Dash/Game/Maps/test.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.25,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 1502,
+                "y": 400
+            }
+        },
+        "E:/project_Nutty_Dash/Game/Maps/test.tmx#Tileset": {
+            "scaleInDock": 0.75
+        },
+        "E:/project_Nutty_Dash/Game/Maps/test.tmx#Tileset1": {
+            "scaleInDock": 0.75,
+            "scaleInEditor": 1
+        },
+        "E:/project_Nutty_Dash/Game/Maps/test.tmx#bg": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "E:/project_Nutty_Dash/Game/Maps/test.tmx#sq_spritesheet": {
+            "scaleInDock": 1
+        },
+        "E:/project_Nutty_Dash/Game/Maps/test.tmx#test-1": {
+            "dynamicWrapping": false,
+            "scaleInDock": 0.33
+        },
+        "E:/project_Nutty_Dash/Game/Maps/test.tmx#test-2": {
+            "scaleInDock": 1
+        },
+        "E:/project_Nutty_Dash/Game/Maps/test.tmx#test-3": {
+            "scaleInDock": 1
+        }
+    },
+    "last.imagePath": "E:/project_Nutty_Dash/Game/Backgrounds",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "E:/project_Nutty_Dash/Game/Maps/test.tmx"
+    ],
+    "project": "test.tiled-project",
+    "recentFiles": [
+        "E:/project_Nutty_Dash/Game/Maps/test.tmx"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    },
+    "tileset.type": 0
+}
