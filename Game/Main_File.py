@@ -22,6 +22,7 @@ class Game:
         sprite_folder = path.join(game_folder, 'Sprites')
         self.map = TileMap(path.join(map_folder, 'test.tmx'))
         self.map_img = self.map.make_map()
+        self.mob_img = pygame.image.load(path.join(sprite_folder, mob_IMG))
         self.map_rect = self.map_img.get_rect()
 
         self.spritesheet_player = Spritesheet(path.join(sprite_folder, 'sq_spritesheet.png'))
@@ -32,13 +33,17 @@ class Game:
         #Начать новую игру
         self.all_sprites = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
-
+        self.mobs = pygame.sprite.Group()
         for tile_object in self.map.tmxdata.objects:
             if tile_object.name == 'player':
                 self.player = Player(self, tile_object.x, tile_object.y)
             if tile_object.name == 'platform':
                 Obstacles(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
-
+            if tile_object.name == 'M':
+                mob = Mob(self, tile_object.x, tile_object.y)
+                self.all_sprites.add(mob)
+                self.mobs.add(mob)
+                self.platforms.add(mob)
         self.camera = Camera(self.map.width, self.map.height)
         self.run()
 
@@ -51,6 +56,7 @@ class Game:
             self.events()
             self.update()
             self.draw()
+
 
     def update(self):
         # Обновление кадров

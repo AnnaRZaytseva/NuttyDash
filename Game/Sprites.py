@@ -167,6 +167,14 @@ class Spritesheet:
         image.blit(self.spritesheet, (0,0), (x, y, width, height))
         return image
 
+class Mob(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.mobs
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.image = game.mob_IMG
+        self.rect = self.image.get_rect()
+        self.pos = vec(x,y) * TILESIZE
+        self.rect.center = self.pos
 
 
 
