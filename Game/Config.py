@@ -9,5 +9,3 @@ GRIDHEIGHT = HEIGHT / TILESIZE
 PLAYER_ACC = 0.9
 PLAYER_FRICTION = -0.15
 PLAYER_GRAV = 0.5
-#Настройки врагов
-mob_IMG = 'mob.png'

@@ -17,7 +17,6 @@ class Player(pygame.sprite.Sprite):
         self.image = self.standing_frames_r[0]
         self.image.set_colorkey((0,0,0))
         self.rect = self.image.get_rect()
-        #self.rect.center = (WIDTH / 2, -HEIGHT)
         self.pos = vec(x, y) #позиция
         self.vel = vec(0,0) #скорость
         self.acc = vec(0,0) #ускорение
@@ -115,8 +114,6 @@ class Player(pygame.sprite.Sprite):
         if abs(self.vel.x)<0.5:
             self.vel.x = 0
         self.pos += self.vel + 0.5 *self.acc #какая-то физформула
-
-
         self.rect.midbottom = self.pos
 
     def animate(self):
@@ -158,6 +155,67 @@ class Obstacles(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+
+class Mob(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.mobs
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pygame.Surface((40, 40))
+        self.image.fill((255, 0, 0))  # Красный цвет для видимости
+        self.rect = self.image.get_rect()
+        self.pos = vec(x, y) * TILESIZE
+        self.vel = vec(2, 0)  # Начальная скорость (2 пикселя вправо)
+        self.acc = vec(0, PLAYER_GRAV)  # Гравитация
+        self.rect.midbottom = self.pos  # Позиция привязана к низу спрайта
+        self.platform = None  # Платформа, на которой находится моб
+
+    def find_platform(self):
+        # Находим платформу под мобом
+        self.rect.y += 1  # Смещаем вниз для проверки столкновения
+        hits = pygame.sprite.spritecollide(self, self.game.platforms, False)
+        self.rect.y -= 1  # Возвращаем обратно
+        if hits:
+            # Выбираем ближайшую платформу под ногами
+            self.platform = min(hits, key=lambda p: p.rect.top - self.rect.bottom)
+        else:
+            self.platform = None
+
+    def update(self):
+        # Применяем гравитацию
+        self.vel += self.acc
+        self.pos += self.vel + 0.5 * self.acc
+
+        # Проверка столкновений с платформами
+        self.rect.midbottom = self.pos
+        hits = pygame.sprite.spritecollide(self, self.game.platforms, False)
+        for hit in hits:
+            if self.vel.y > 0:  # Падение вниз
+                self.pos.y = hit.rect.top
+                self.vel.y = 0
+                self.platform = hit  # Запоминаем платформу, на которой стоим
+            elif self.vel.y < 0:  # Удар головой вверх
+                self.pos.y = hit.rect.bottom + self.rect.height
+                self.vel.y = 0
+            self.rect.midbottom = self.pos
+
+        # Если платформа не найдена, ищем её
+        if not self.platform:
+            self.find_platform()
+
+        # Ограничение движения размерами платформы
+        if self.platform:
+            if self.pos.x + self.rect.width / 2 > self.platform.rect.right:  # Правая граница платформы
+                self.pos.x = self.platform.rect.right - self.rect.width / 2
+                self.vel.x = -2  # Разворот влево
+            elif self.pos.x - self.rect.width / 2 < self.platform.rect.left:  # Левая граница платформы
+                self.pos.x = self.platform.rect.left + self.rect.width / 2
+                self.vel.x = 2  # Разворот вправо
+
+        # Синхронизация rect с pos
+        self.rect.midbottom = self.pos
+
+
 class Spritesheet:
     def __init__(self, filename):
         self.spritesheet = pygame.image.load(filename).convert()
@@ -167,14 +225,6 @@ class Spritesheet:
         image.blit(self.spritesheet, (0,0), (x, y, width, height))
         return image
 
-class Mob(pygame.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.mobs
-        pygame.sprite.Sprite.__init__(self, self.groups)
-        self.image = game.mob_IMG
-        self.rect = self.image.get_rect()
-        self.pos = vec(x,y) * TILESIZE
-        self.rect.center = self.pos
 
 
 

@@ -28,9 +28,6 @@ class TileMap:
         return temp_surface
 
 
-
-
-
 class Camera:
     def __init__(self, width, height):
         self.camera = pygame.Rect(0,0, width, height) #для смещения отрисовки карты
