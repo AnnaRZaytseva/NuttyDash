@@ -83,7 +83,7 @@ class Player(pygame.sprite.Sprite):
             self.standing_frames_r.append(pygame.transform.flip(frame, True, False))
             frame.set_colorkey((0, 0, 0))
         self.jumping_frames_l = [self.game.spritesheet_player.get_image(192, 40, 119, 79),
-                               self.game.spritesheet_player.get_image(638, 28, 88, 100)]
+                                 self.game.spritesheet_player.get_image(638, 28, 88, 100)]
         for frame in self.jumping_frames_l:
             frame.set_colorkey((0,0,0))
         self.jumping_frames_r = []

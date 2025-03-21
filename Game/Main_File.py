@@ -49,7 +49,7 @@ class Game:
         game_folder = path.dirname(__file__)
         map_folder = path.join(game_folder, 'Maps')
         sprite_folder = path.join(game_folder, 'Sprites')
-        self.font = path.join(game_folder, 'font.otf')
+        self.font = path.join(game_folder, 'font.ttf')
         self.dim_screen = pygame.Surface(self.screen.get_size()).convert_alpha()
         self.dim_screen.fill((0, 0, 0, 180))
         self.map = TileMap(path.join(map_folder, 'test.tmx'))
