@@ -16,11 +16,42 @@ class Game:
         pygame.key.set_repeat(500,100)
         self.load_data()
         self.GameRunning = True
+        self.paused = False
+
+    def draw_text(self, text, font_name, size,color, x, y, align="nw"):
+        font = pygame.font.Font(font_name, size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        if align == "nw":
+            text_rect.topleft = (x, y)
+        if align == "ne":
+            text_rect.topright = (x, y)
+        if align == "sw":
+            text_rect.bottomleft = (x, y)
+        if align == "se":
+            text_rect.bottomright = (x, y)
+        if align == "n":
+            text_rect.midtop = (x, y)
+        if align == "s":
+            text_rect.midbottom = (x, y)
+        if align == "e":
+            text_rect.midright = (x, y)
+        if align == "w":
+            text_rect.midleft = (x, y)
+        if align == "center":
+            text_rect.center = (x, y)
+        self.screen.blit(text_surface, text_rect)
+    def show_start_screen(self):
+        pass
+        #Начальный экран/ меню
 
     def load_data(self):
         game_folder = path.dirname(__file__)
         map_folder = path.join(game_folder, 'Maps')
         sprite_folder = path.join(game_folder, 'Sprites')
+        self.font = path.join(game_folder, 'font.otf')
+        self.dim_screen = pygame.Surface(self.screen.get_size()).convert_alpha()
+        self.dim_screen.fill((0, 0, 0, 180))
         self.map = TileMap(path.join(map_folder, 'test.tmx'))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
@@ -46,6 +77,7 @@ class Game:
 
         self.camera = Camera(self.map.width, self.map.height)
         self.run()
+        self.paused = False
 
     def run(self):
         # Игровой цикл
@@ -54,7 +86,8 @@ class Game:
             # FPS
             self.clock.tick(FPS)
             self.events()
-            self.update()
+            if not self.paused:
+                self.update()
             self.draw()
 
     def update(self):
@@ -66,7 +99,6 @@ class Game:
         if mob_hits:
             self.playing = False  # Останавливаем игровой цикл
             self.show_gameover_screen()  # Показываем экран Game Over
-
         #Проверка на столкновение,только если падает
         if self.player.vel.y > 0:
             hits = pygame.sprite.spritecollide(self.player, self.platforms, False)
@@ -80,7 +112,6 @@ class Game:
 
     def events(self):
         # События
-
         for event in pygame.event.get():
             # Закрытие окна
             if event.type == pygame.QUIT:
@@ -92,8 +123,12 @@ class Game:
                     if self.playing:
                         self.playing = False
                     self.GameRunning = False
+                if event.key == pygame.K_q:
+                    self.paused = not self.paused
+
                 if event.key == pygame.K_SPACE:
-                    self.player.jump()
+                        self.player.jump()
+
     def draw(self):
         # Рендер
 
@@ -101,6 +136,9 @@ class Game:
 
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
+        if self.paused:
+            self.screen.blit(self.dim_screen, (0, 0))
+            self.draw_text("Paused", self.font, 105, (0, 250, 154), WIDTH / 2, HEIGHT / 2, align="center")
         pygame.display.flip()
 
     def show_start_screen(self):
@@ -109,16 +147,8 @@ class Game:
     def show_gameover_screen(self):
         #Экран при проигрыше
         self.screen.fill((0, 0, 0))  # Черный фон
-        font = pygame.font.Font(None, 74)
-        text = font.render("Game Over", True, (255, 0, 0))  # Красный текст
-        text_rect = text.get_rect(center=(WIDTH / 2, HEIGHT / 2 - 50))
-        self.screen.blit(text, text_rect)
-
-        font = pygame.font.Font(None, 36)
-        restart_text = font.render("Press R to Restart or ESC to Quit", True, (255, 255, 255))
-        restart_rect = restart_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 50))
-        self.screen.blit(restart_text, restart_rect)
-
+        self.draw_text("Game Over", self.font, 74, (0, 250, 154), WIDTH / 2, HEIGHT / 2 - 50, align="center")
+        self.draw_text("Press R to Restart or ESC to Quit", self.font, 36, (0, 250, 154), WIDTH / 2, HEIGHT /  2 + 50, align="center")
         pygame.display.flip()
 
         # Очистка очереди событий перед ожиданием ввода
@@ -126,6 +156,7 @@ class Game:
 
         # Ожидание ввода пользователя
         waiting = True
+
         while waiting:
             self.clock.tick(FPS)
             for event in pygame.event.get():
