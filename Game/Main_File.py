@@ -17,6 +17,7 @@ class Game:
         self.load_data()
         self.GameRunning = True
         self.paused = False
+        self.health = 3
 
     def draw_text(self, text, font_name, size,color, x, y, align="nw"):
         font = pygame.font.Font(font_name, size)
@@ -56,6 +57,8 @@ class Game:
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         self.spritesheet_player = Spritesheet(path.join(sprite_folder, 'sq_spritesheet.png'))
+        self.heart_img = pygame.image.load('heart.png')
+        self.helth_img = pygame.transform.scale(self.heart_img, (20, 20))
 
     def new(self):
         #Начать новую игру
@@ -78,6 +81,7 @@ class Game:
         self.camera = Camera(self.map.width, self.map.height)
         self.run()
         self.paused = False
+        self.GameRunning = True
 
     def run(self):
         # Игровой цикл
@@ -98,8 +102,8 @@ class Game:
         mob_hits = pygame.sprite.spritecollide(self.player, self.mobs, False)
         if mob_hits:
             self.playing = False  # Останавливаем игровой цикл
-            self.show_gameover_screen()  # Показываем экран Game Over
-        #Проверка на столкновение,только если падает
+            self.check_health()  # Уменьшаем здоровье игрока
+        #Проверка на столкновение, только если падает
         if self.player.vel.y > 0:
             hits = pygame.sprite.spritecollide(self.player, self.platforms, False)
             if hits:
@@ -129,6 +133,7 @@ class Game:
                 if event.key == pygame.K_SPACE:
                         self.player.jump()
 
+
     def draw(self):
         # Рендер
 
@@ -139,11 +144,13 @@ class Game:
         if self.paused:
             self.screen.blit(self.dim_screen, (0, 0))
             self.draw_text("Paused", self.font, 105, (0, 250, 154), WIDTH / 2, HEIGHT / 2, align="center")
+        self.show_health()
         pygame.display.flip()
 
     def show_start_screen(self):
         #Начальный экран/ меню
         pass
+
     def show_gameover_screen(self):
         #Экран при проигрыше
         self.screen.fill((0, 0, 0))  # Черный фон
@@ -166,10 +173,27 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:  # Перезапуск
                         waiting = False
+                        self.health = 3
                         self.new()  # Запускаем новую игру прямо здесь
+
                     if event.key == pygame.K_ESCAPE:  # Выход
                         self.GameRunning = False
                         waiting = False
+
+
+
+    def show_health(self):
+        show = 0
+        x = 20
+        while show != self.health:
+            self.screen.blit(self.heart_img, (x, 20))
+            x+=20
+            show+=1
+
+    def check_health(self):
+        self.health = self.health - 1
+        if self.health == 0:
+            self.show_gameover_screen()
 
 # Основной цикл игры (упрощен)
 game = Game()
