@@ -1,7 +1,7 @@
 #Классы спрайтов для игры
 import pygame
 from Config import *
-
+pygame.init()
 vec = pygame.math.Vector2
 
 class Player(pygame.sprite.Sprite):
@@ -89,6 +89,8 @@ class Player(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.y -= 2  # Возвращаем обратно
         if hits and not self.jumping:
+            pygame.mixer.music.load("sounds/jump.mp3")
+            pygame.mixer.music.play(0)
             self.jumping = True
             self.vel.y = -11  # Скорость прыжка вверх
             self.pos.y += self.vel.y  # Немедленно начинаем движение вверх
@@ -113,6 +115,7 @@ class Player(pygame.sprite.Sprite):
                 self.rect.bottom = bottom
 
         if not self.jumping and not self.walking:
+            pygame.mixer.sound.stop
             if self.image == self.walk_frames_r[self.current_frame]:
                 self.image = self.standing_frames_r[0]
             if self.image == self.walk_frames_l[self.current_frame]:
@@ -120,6 +123,11 @@ class Player(pygame.sprite.Sprite):
             bottom = self.rect.bottom
             self.rect = self.image.get_rect()
             self.rect.bottom = bottom
+        if self.walking and not self.jumping:
+            pygame.mixer.music.load("sounds/grass.mp3")
+            pygame.mixer.music.set_volume(0.5)
+            pygame.mixer.music.play(-1)
+            
 
 class Obstacles(pygame.sprite.Sprite):
     def __init__(self, game, x, y, w, h):
