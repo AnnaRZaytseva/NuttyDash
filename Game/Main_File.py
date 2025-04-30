@@ -49,9 +49,6 @@ class Game:
         if align == "center":
             text_rect.center = (x, y)
         self.screen.blit(text_surface, text_rect)
-    def show_start_screen(self):
-        pass
-        #Начальный экран/ меню
 
     def load_data(self):
         game_folder = path.dirname(__file__)
@@ -97,7 +94,6 @@ class Game:
         self.camera = Camera(self.map.width, self.map.height)
         self.run()
         self.paused = False
-
 
     def next_level(self):
         self.current_level += 1
@@ -206,9 +202,18 @@ class Game:
         self.show_health()
         pygame.display.flip()
 
-    def show_start_screen(self):
-        #Начальный экран/ меню
-        pass
+    '''def show_start_screen(self):
+        events = pygame.event.get()
+        #but_img = pygame.image.load("Menu/Images/button.png")
+        bg = pygame.image.load("Menu/Images/background.png")
+
+        self.screen.fill((255, 255, 255))
+        self.screen.blit(bg, (0, 0))
+
+        sets.screen_blit()
+        lev_menu.screen_blit()
+        pygame_widgets.update(events)
+        pygame.display.update()'''
 
     def show_gameover_screen(self):
         # Экран при проигрыше
@@ -236,8 +241,6 @@ class Game:
                         self.GameRunning = False
                         waiting = False
 
-
-
     def show_health(self):
         show = 0
         x = 20
@@ -253,12 +256,12 @@ class Game:
             self.show_gameover_screen()
 
 # Основной цикл игры (упрощен)
-game = Game()
+'''game = Game()
 game.GameRunning = True
-game.show_start_screen()
+#game.show_start_screen()
 while game.GameRunning:
-    game.new()
-pygame.quit()
+    game.show_start_screen()
+pygame.quit()'''
 
 
 
